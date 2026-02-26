@@ -1,0 +1,11 @@
+{
+    "name": "piggy-bank-scripts",
+    "version": "1.0.0",
+    "type": "module",
+    "dependencies": {
+        "@btc-vision/bitcoin": "^7.0.0-rc.5",
+        "@btc-vision/transaction": "^1.8.0-rc.7",
+        "dotenv": "^17.3.1",
+        "opnet": "^1.8.1-rc.9"
+    }
+}

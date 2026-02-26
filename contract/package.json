@@ -1,0 +1,31 @@
+{
+    "name": "piggy-bank-contract",
+    "version": "1.0.0",
+    "description": "PiggyBank — Time-Locked MOTO Savings Vault on Bitcoin L1 via OPNet",
+    "scripts": {
+        "build": "asc src/index.ts --config asconfig.json --target debug",
+        "build:bank": "asc src/index-bank.ts --config asconfig-bank.json --target bank",
+        "build:pool": "asc src/index-pool.ts --config asconfig-pool.json --target pool",
+        "build:all": "npm run build && npm run build:bank && npm run build:pool",
+        "clean": "rm -rf build/*",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "postinstall": "npx patch-package"
+    },
+    "dependencies": {
+        "@btc-vision/as-bignum": "latest",
+        "@btc-vision/btc-runtime": "latest",
+        "@btc-vision/opnet-transform": "latest",
+        "dotenv": "^17.3.1"
+    },
+    "devDependencies": {
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@testing-library/user-event": "^14.6.1",
+        "@vitest/coverage-v8": "^4.0.18",
+        "assemblyscript": "^0.27.32",
+        "jsdom": "^28.1.0",
+        "patch-package": "^8.0.0",
+        "vitest": "^4.0.18"
+    }
+}

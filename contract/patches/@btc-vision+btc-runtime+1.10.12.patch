@@ -1,0 +1,472 @@
+diff --git a/node_modules/@btc-vision/btc-runtime/LICENSE b/node_modules/@btc-vision/btc-runtime/LICENSE
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/README.md b/node_modules/@btc-vision/btc-runtime/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/SECURITY.md b/node_modules/@btc-vision/btc-runtime/SECURITY.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/README.md b/node_modules/@btc-vision/btc-runtime/docs/README.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/advanced/bitcoin-scripts.md b/node_modules/@btc-vision/btc-runtime/docs/advanced/bitcoin-scripts.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/advanced/cross-contract-calls.md b/node_modules/@btc-vision/btc-runtime/docs/advanced/cross-contract-calls.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/advanced/plugins.md b/node_modules/@btc-vision/btc-runtime/docs/advanced/plugins.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/advanced/quantum-resistance.md b/node_modules/@btc-vision/btc-runtime/docs/advanced/quantum-resistance.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/advanced/signature-verification.md b/node_modules/@btc-vision/btc-runtime/docs/advanced/signature-verification.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/blockchain.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/blockchain.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/events.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/events.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/op20.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/op20.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/op721.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/op721.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/safe-math.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/safe-math.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/api-reference/storage.md b/node_modules/@btc-vision/btc-runtime/docs/api-reference/storage.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/contracts/op-net-base.md b/node_modules/@btc-vision/btc-runtime/docs/contracts/op-net-base.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/contracts/op20-token.md b/node_modules/@btc-vision/btc-runtime/docs/contracts/op20-token.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/contracts/op20s-signatures.md b/node_modules/@btc-vision/btc-runtime/docs/contracts/op20s-signatures.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/contracts/op721-nft.md b/node_modules/@btc-vision/btc-runtime/docs/contracts/op721-nft.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/contracts/reentrancy-guard.md b/node_modules/@btc-vision/btc-runtime/docs/contracts/reentrancy-guard.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/blockchain-environment.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/blockchain-environment.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/decorators.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/decorators.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/events.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/events.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/pointers.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/pointers.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/security.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/security.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/core-concepts/storage-system.md b/node_modules/@btc-vision/btc-runtime/docs/core-concepts/storage-system.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/examples/basic-token.md b/node_modules/@btc-vision/btc-runtime/docs/examples/basic-token.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/examples/nft-with-reservations.md b/node_modules/@btc-vision/btc-runtime/docs/examples/nft-with-reservations.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/examples/oracle-integration.md b/node_modules/@btc-vision/btc-runtime/docs/examples/oracle-integration.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/examples/stablecoin.md b/node_modules/@btc-vision/btc-runtime/docs/examples/stablecoin.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/getting-started/first-contract.md b/node_modules/@btc-vision/btc-runtime/docs/getting-started/first-contract.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/getting-started/installation.md b/node_modules/@btc-vision/btc-runtime/docs/getting-started/installation.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/getting-started/project-structure.md b/node_modules/@btc-vision/btc-runtime/docs/getting-started/project-structure.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/storage/memory-maps.md b/node_modules/@btc-vision/btc-runtime/docs/storage/memory-maps.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/storage/stored-arrays.md b/node_modules/@btc-vision/btc-runtime/docs/storage/stored-arrays.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/storage/stored-maps.md b/node_modules/@btc-vision/btc-runtime/docs/storage/stored-maps.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/storage/stored-primitives.md b/node_modules/@btc-vision/btc-runtime/docs/storage/stored-primitives.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/types/address.md b/node_modules/@btc-vision/btc-runtime/docs/types/address.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/types/bytes-writer-reader.md b/node_modules/@btc-vision/btc-runtime/docs/types/bytes-writer-reader.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/types/calldata.md b/node_modules/@btc-vision/btc-runtime/docs/types/calldata.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/docs/types/safe-math.md b/node_modules/@btc-vision/btc-runtime/docs/types/safe-math.md
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/abort/abort.ts b/node_modules/@btc-vision/btc-runtime/runtime/abort/abort.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/buffer/BytesReader.ts b/node_modules/@btc-vision/btc-runtime/runtime/buffer/BytesReader.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/buffer/BytesWriter.ts b/node_modules/@btc-vision/btc-runtime/runtime/buffer/BytesWriter.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/constants/Exports.ts b/node_modules/@btc-vision/btc-runtime/runtime/constants/Exports.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP20.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP20.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP20S.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP20S.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP721.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP721.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP_NET.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/OP_NET.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/ReentrancyGuard.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/ReentrancyGuard.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP1155.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP1155.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20Receiver.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20Receiver.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20S.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP20S.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP721.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/IOP721.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP1155InitParameters.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP1155InitParameters.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP20InitParameters.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP20InitParameters.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP721InitParameters.ts b/node_modules/@btc-vision/btc-runtime/runtime/contracts/interfaces/OP721InitParameters.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/Atomic.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/Atomic.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/BlockchainEnvironment.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/BlockchainEnvironment.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/classes/Block.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/classes/Block.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/classes/Transaction.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/classes/Transaction.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/classes/UTXO.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/classes/UTXO.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/ConsensusRules.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/ConsensusRules.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/MLDSAMetadata.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/MLDSAMetadata.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/Signatures.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/consensus/Signatures.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/decoders/TransactionDecoder.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/decoders/TransactionDecoder.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/enums/TransactionFlags.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/enums/TransactionFlags.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/global.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/global.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/env/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/env/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/NetEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/NetEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/op20s/OP20SEvents.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/op20s/OP20SEvents.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/ApprovedEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/ApprovedEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/ApprovedForAll.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/ApprovedForAll.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/BurnedEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/BurnedEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/MintedEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/MintedEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredBatchEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredBatchEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredSingleEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/TransferredSingleEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/URIEvent.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/URIEvent.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/events/predefined/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/exports/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/exports/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/generic/AddressMap.ts b/node_modules/@btc-vision/btc-runtime/runtime/generic/AddressMap.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/generic/Map.ts b/node_modules/@btc-vision/btc-runtime/runtime/generic/Map.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/generic/MapU256.ts b/node_modules/@btc-vision/btc-runtime/runtime/generic/MapU256.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/generic/MapUint8Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/generic/MapUint8Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/interfaces/IBTC.ts b/node_modules/@btc-vision/btc-runtime/runtime/interfaces/IBTC.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/interfaces/as.ts b/node_modules/@btc-vision/btc-runtime/runtime/interfaces/as.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/lang/Definitions.ts b/node_modules/@btc-vision/btc-runtime/runtime/lang/Definitions.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/math/abi.ts b/node_modules/@btc-vision/btc-runtime/runtime/math/abi.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/math/bytes.ts b/node_modules/@btc-vision/btc-runtime/runtime/math/bytes.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/memory/AddressMemoryMap.ts b/node_modules/@btc-vision/btc-runtime/runtime/memory/AddressMemoryMap.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/memory/KeyMerger.ts b/node_modules/@btc-vision/btc-runtime/runtime/memory/KeyMerger.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/memory/MapOfMap.ts b/node_modules/@btc-vision/btc-runtime/runtime/memory/MapOfMap.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/memory/Nested.ts b/node_modules/@btc-vision/btc-runtime/runtime/memory/Nested.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/plugins/Plugin.ts b/node_modules/@btc-vision/btc-runtime/runtime/plugins/Plugin.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/Bech32.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/Bech32.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/BitcoinAddresses.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/BitcoinAddresses.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/BitcoinCodec.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/BitcoinCodec.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/Networks.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/Networks.ts
+old mode 100644
+new mode 100755
+index 72c89da..c9d7b9b
+--- a/node_modules/@btc-vision/btc-runtime/runtime/script/Networks.ts
++++ b/node_modules/@btc-vision/btc-runtime/runtime/script/Networks.ts
+@@ -5,6 +5,7 @@ export enum Networks {
+     Mainnet = 0,
+     Testnet = 1,
+     Regtest = 2,
++    OPNetTestnet = 3,
+ }
+ 
+ @final
+@@ -12,6 +13,7 @@ export class NetworkManager {
+     private readonly mainnet: Uint8Array;
+     private readonly testnet: Uint8Array;
+     private readonly regtest: Uint8Array;
++    private readonly opnetTestnet: Uint8Array;
+ 
+     constructor() {
+         const mainnet = new Uint8Array(32);
+@@ -35,9 +37,17 @@ export class NetworkManager {
+             0x46, 0x6e, 0x22, 0x06,
+         ]);
+ 
++        const opnetTestnet = new Uint8Array(32);
++        opnetTestnet.set([
++            0x00, 0x00, 0x01, 0x7f, 0x85, 0x10, 0x6b, 0x1f, 0xee, 0xaf, 0x2f, 0x70, 0xf1, 0xe2,
++            0xb8, 0x05, 0x98, 0x5b, 0xb5, 0x75, 0xf8, 0x8f, 0x9b, 0x0b, 0xa5, 0x75, 0x3d, 0x2f,
++            0x3c, 0xf1, 0x32, 0x73,
++        ]);
++
+         this.mainnet = mainnet;
+         this.testnet = testnet;
+         this.regtest = regtest;
++        this.opnetTestnet = opnetTestnet;
+     }
+ 
+     public hrp(n: Networks): string {
+@@ -48,6 +58,8 @@ export class NetworkManager {
+                 return 'tb';
+             case Networks.Regtest:
+                 return 'bcrt';
++            case Networks.OPNetTestnet:
++                return 'opt';
+             default:
+                 throw new Revert('Unknown network');
+         }
+@@ -65,6 +77,9 @@ export class NetworkManager {
+             case Networks.Regtest:
+                 out.set(this.regtest);
+                 return out;
++            case Networks.OPNetTestnet:
++                out.set(this.opnetTestnet);
++                return out;
+             default:
+                 throw new Revert('Unknown network');
+         }
+@@ -78,6 +93,7 @@ export class NetworkManager {
+         if (this.equals(chainId, this.mainnet)) return Networks.Mainnet;
+         if (this.equals(chainId, this.testnet)) return Networks.Testnet;
+         if (this.equals(chainId, this.regtest)) return Networks.Regtest;
++        if (this.equals(chainId, this.opnetTestnet)) return Networks.OPNetTestnet;
+ 
+         throw new Revert('Unknown chain id');
+     }
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/Opcodes.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/Opcodes.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/Script.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/Script.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/ScriptUtils.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/ScriptUtils.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/Segwit.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/Segwit.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/script/reader/ScriptReader.ts b/node_modules/@btc-vision/btc-runtime/runtime/script/reader/ScriptReader.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/secp256k1/ECPoint.ts b/node_modules/@btc-vision/btc-runtime/runtime/secp256k1/ECPoint.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/shared-libraries/OP20Utils.ts b/node_modules/@btc-vision/btc-runtime/runtime/shared-libraries/OP20Utils.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/shared-libraries/TransferHelper.ts b/node_modules/@btc-vision/btc-runtime/runtime/shared-libraries/TransferHelper.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/AdvancedStoredString.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/AdvancedStoredString.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/BaseStoredString.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/BaseStoredString.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredAddress.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredAddress.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredBoolean.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredBoolean.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredString.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredString.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU256.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU256.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU32.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU32.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU64.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/StoredU64.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredAddressArray.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredAddressArray.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredBooleanArray.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredBooleanArray.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredPackedArray.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredPackedArray.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU128Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU128Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU16Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU16Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU256Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU256Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU32Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU32Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU64Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU64Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU8Array.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/arrays/StoredU8Array.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/storage/maps/StoredMapU256.ts b/node_modules/@btc-vision/btc-runtime/runtime/storage/maps/StoredMapU256.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/Address.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/Address.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/ExtendedAddress.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/ExtendedAddress.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/Revert.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/Revert.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/SafeMath.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/SafeMath.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/SafeMathI128.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/SafeMathI128.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/types/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/types/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/utils/hex.ts b/node_modules/@btc-vision/btc-runtime/runtime/utils/hex.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/utils/index.ts b/node_modules/@btc-vision/btc-runtime/runtime/utils/index.ts
+old mode 100644
+new mode 100755
+diff --git a/node_modules/@btc-vision/btc-runtime/runtime/utils/lengths.ts b/node_modules/@btc-vision/btc-runtime/runtime/utils/lengths.ts
+old mode 100644
+new mode 100755

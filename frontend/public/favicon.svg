@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Dark background -->
+  <rect width="64" height="64" rx="12" fill="#030712"/>
+
+  <!-- Piggy bank body -->
+  <ellipse cx="33" cy="36" rx="18" ry="15" fill="#0f172a" stroke="#4ade80" stroke-width="1.5"/>
+
+  <!-- Snout -->
+  <ellipse cx="49" cy="37" rx="5" ry="4" fill="#0f172a" stroke="#4ade80" stroke-width="1.5"/>
+  <!-- Nostrils -->
+  <circle cx="47.5" cy="37" r="1" fill="#4ade80"/>
+  <circle cx="50.5" cy="37" r="1" fill="#4ade80"/>
+
+  <!-- Eye -->
+  <circle cx="38" cy="29" r="2" fill="#4ade80"/>
+  <circle cx="38" cy="29" r="0.8" fill="#030712"/>
+
+  <!-- Ear -->
+  <ellipse cx="26" cy="23" rx="5" ry="4" fill="#0f172a" stroke="#4ade80" stroke-width="1.5"/>
+  <ellipse cx="26" cy="23" rx="3" ry="2.5" fill="#4ade80" opacity="0.3"/>
+
+  <!-- Coin slot on top (Bitcoin orange) -->
+  <rect x="28" y="19" width="10" height="2.5" rx="1.25" fill="#f7931a"/>
+
+  <!-- Legs -->
+  <rect x="22" y="48" width="5" height="6" rx="2" fill="#0f172a" stroke="#4ade80" stroke-width="1.2"/>
+  <rect x="30" y="48" width="5" height="6" rx="2" fill="#0f172a" stroke="#4ade80" stroke-width="1.2"/>
+  <rect x="38" y="48" width="5" height="6" rx="2" fill="#0f172a" stroke="#4ade80" stroke-width="1.2"/>
+
+  <!-- Tail (curly) -->
+  <path d="M15 34 Q10 30 13 26 Q16 22 13 19" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+
+  <!-- Neon glow ring -->
+  <ellipse cx="33" cy="36" rx="18" ry="15" fill="none" stroke="#4ade80" stroke-width="0.5" opacity="0.4"/>
+</svg>

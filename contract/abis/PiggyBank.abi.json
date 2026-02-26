@@ -1,0 +1,166 @@
+{
+    "functions": [
+        {
+            "name": "createVault",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "mode",
+                    "type": "UINT8"
+                },
+                {
+                    "name": "bps",
+                    "type": "UINT16"
+                },
+                {
+                    "name": "lockBlocks",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "success",
+                    "type": "BOOL"
+                }
+            ]
+        },
+        {
+            "name": "swapForDust",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "bankAmount",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "minPiggyOut",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "piggyToWallet",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "dustToVault",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "withdraw",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "amount",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "getPosition",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "addr",
+                    "type": "ADDRESS"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "balance",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "unlockBlock",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "depositCount",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "getTotalLocked",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "total",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "canWithdraw",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "addr",
+                    "type": "ADDRESS"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "ready",
+                    "type": "BOOL"
+                }
+            ]
+        },
+        {
+            "name": "claimFaucet",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "amount",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "getDustConfig",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "addr",
+                    "type": "ADDRESS"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "mode",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "bps",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "lockBlocks",
+                    "type": "UINT256"
+                }
+            ]
+        }
+    ],
+    "events": []
+}

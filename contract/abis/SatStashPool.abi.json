@@ -1,0 +1,92 @@
+{
+    "functions": [
+        {
+            "name": "initializeLiquidity",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "bankAmount",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "piggyAmount",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "success",
+                    "type": "BOOL"
+                }
+            ]
+        },
+        {
+            "name": "swap",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "amountIn",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "swapBankToPiggy",
+                    "type": "BOOL"
+                },
+                {
+                    "name": "minAmountOut",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "amountOut",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "getAmountOut",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "amountIn",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "swapBankToPiggy",
+                    "type": "BOOL"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "amountOut",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "getReserves",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [],
+            "outputs": [
+                {
+                    "name": "bankReserve",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "piggyReserve",
+                    "type": "UINT256"
+                }
+            ]
+        }
+    ],
+    "events": []
+}

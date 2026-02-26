@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+contract/build/
+frontend/dist/
+frontend/.vite/
+
+# Environment files (secrets)
+contract/.env
+*.env.local
+.env
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+C:\Users\ferra\.claude
