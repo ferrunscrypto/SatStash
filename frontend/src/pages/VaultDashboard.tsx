@@ -175,7 +175,7 @@ export function VaultDashboard({
                         <img
                             src="/favicon.svg"
                             alt="SatStash"
-                            style={{ width: '80px', height: '80px', opacity: 0.9, filter: 'drop-shadow(0 0 12px rgba(74,222,128,0.4))' }}
+                            style={{ width: '100px', height: '100px', opacity: 0.9, filter: 'drop-shadow(0 0 12px rgba(74,222,128,0.4))' }}
                         />
                     </div>
                 </div>
