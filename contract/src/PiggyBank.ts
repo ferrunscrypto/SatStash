@@ -71,8 +71,10 @@ const PIGGY_MAX_SUPPLY: u256 = u256.fromString('50000000000000000');
 // 1 PIGGY unit = 10^8
 const PIGGY_UNIT: u256 = u256.fromU64(100_000_000);
 
-// Faucet: 100K PIGGY (100_000 × 10^8)
-const FAUCET_AMOUNT: u256 = u256.fromString('10000000000000');
+// Deployer alloc: 1M PIGGY for pool seeding
+const PIGGY_DEPLOYER_ALLOC: u256 = u256.fromString('100000000000000');
+// Faucet: 1,000 PIGGY (1_000 × 10^8) — small enough to be sustainable for many claims
+const FAUCET_AMOUNT: u256 = u256.fromString('100000000000');
 
 // Rate: 1 BANK → 2.3 PIGGY  (rate = 23/10)
 const RATE_NUM: u256 = u256.fromU64(23);
@@ -150,8 +152,10 @@ export class PiggyBank extends OP20 {
             8,
             'Piggy',
             'PIGGY',
+            'https://i.imgur.com/22kfWTJ.png',
         ));
         this.totalLocked.value = u256.Zero;
+        this._mint(Blockchain.tx.sender, PIGGY_DEPLOYER_ALLOC);
     }
 
     // ── createVault(mode, bps, lockBlocks) → success ─────────────────────────
@@ -299,6 +303,102 @@ export class PiggyBank extends OP20 {
         return w;
     }
 
+    // ── swapPiggyForBank(piggyAmount, minBankOut) → (bankToWallet, dustToVault)
+
+    @method(
+        { name: 'piggyAmount', type: ABIDataTypes.UINT256 },
+        { name: 'minBankOut', type: ABIDataTypes.UINT256 },
+    )
+    @returns(
+        { name: 'bankToWallet', type: ABIDataTypes.UINT256 },
+        { name: 'dustToVault', type: ABIDataTypes.UINT256 },
+    )
+    private swapPiggyForBank(calldata: Calldata): BytesWriter {
+        const piggyAmount: u256 = calldata.readU256();
+        const minBankOut: u256  = calldata.readU256();
+
+        if (piggyAmount == u256.Zero) {
+            throw new Revert('Amount must be > 0');
+        }
+
+        const sender: Address = Blockchain.tx.sender;
+        const mode: u256 = this.userDustMode.get(sender);
+
+        if (mode == u256.Zero) {
+            throw new Revert('Create vault first');
+        }
+
+        const lockBlocks: u256 = this.userLockBlocks.get(sender);
+        const bps: u256 = this.userDustBps.get(sender);
+
+        // Compute dust from PIGGY input
+        let dust: u256;
+        if (mode == u256.One) {
+            const remainder: u256 = SafeMath.mod(piggyAmount, PIGGY_UNIT);
+            if (remainder == u256.Zero) {
+                dust = u256.Zero;
+            } else {
+                dust = SafeMath.sub(PIGGY_UNIT, remainder);
+            }
+        } else {
+            dust = SafeMath.div(
+                SafeMath.mul(piggyAmount, bps),
+                u256.fromU64(10000),
+            );
+        }
+
+        // Guard: if dust >= piggyAmount, all goes to vault, no swap
+        if (dust >= piggyAmount) {
+            dust = piggyAmount;
+        }
+
+        const piggyToSwap: u256 = SafeMath.sub(piggyAmount, dust);
+
+        // bankOut = piggyToSwap × 10 / 23  (reverse rate)
+        const bankOut: u256 = SafeMath.div(
+            SafeMath.mul(piggyToSwap, RATE_DEN),
+            RATE_NUM,
+        );
+
+        if (bankOut < minBankOut) {
+            throw new Revert('Slippage exceeded');
+        }
+
+        // Update vault state (Effects before Interactions)
+        const currentBalance: u256 = this.userBalance.get(sender);
+        const currentBlock: u256   = u256.fromU64(Blockchain.block.number);
+
+        if (dust > u256.Zero) {
+            if (currentBalance == u256.Zero) {
+                this.userUnlockBlock.set(sender, SafeMath.add(currentBlock, lockBlocks));
+                this.userDepositCount.set(sender, u256.One);
+            } else {
+                this.userDepositCount.set(sender, SafeMath.add(this.userDepositCount.get(sender), u256.One));
+            }
+            this.userBalance.set(sender, SafeMath.add(currentBalance, dust));
+            this.totalLocked.value = SafeMath.add(this.totalLocked.value, dust);
+        }
+
+        Blockchain.emit(new SwapExecutedEvent(sender, piggyAmount, bankOut, dust));
+
+        // Interactions
+        const contractAddr: Address = Blockchain.contractAddress;
+
+        // 1. Move PIGGY from sender to contract (internal OP20 transfer — no approval needed)
+        this._transfer(sender, contractAddr, piggyAmount);
+
+        // 2. Send BANK from contract reserves to sender
+        if (bankOut > u256.Zero) {
+            const bank: Address = this.bankToken.value;
+            TransferHelper.safeTransfer(bank, sender, bankOut);
+        }
+
+        const w = new BytesWriter(64);
+        w.writeU256(bankOut);
+        w.writeU256(dust);
+        return w;
+    }
+
     // ── withdraw() → amount ───────────────────────────────────────────────────
 
     @method()
@@ -331,6 +431,51 @@ export class PiggyBank extends OP20 {
 
         const w = new BytesWriter(32);
         w.writeU256(balance);
+        return w;
+    }
+
+    // ── depositToVault(amount) → success ──────────────────────────────────────
+    // Allows a user to deposit PIGGY tokens into their vault (e.g. after an AMM swap).
+    // The user must have a vault configured (createVault called first).
+    // Tokens are transferred from the sender to this contract and locked.
+
+    @method({ name: 'amount', type: ABIDataTypes.UINT256 })
+    @returns({ name: 'success', type: ABIDataTypes.BOOL })
+    private depositToVault(calldata: Calldata): BytesWriter {
+        const amount: u256 = calldata.readU256();
+
+        if (amount == u256.Zero) {
+            throw new Revert('Amount must be > 0');
+        }
+
+        const sender: Address = Blockchain.tx.sender;
+        const mode: u256 = this.userDustMode.get(sender);
+
+        if (mode == u256.Zero) {
+            throw new Revert('Create vault first');
+        }
+
+        const lockBlocks: u256 = this.userLockBlocks.get(sender);
+        const currentBalance: u256 = this.userBalance.get(sender);
+        const currentBlock: u256 = u256.fromU64(Blockchain.block.number);
+
+        // Effects
+        if (currentBalance == u256.Zero) {
+            // First deposit — set unlock block
+            this.userUnlockBlock.set(sender, SafeMath.add(currentBlock, lockBlocks));
+            this.userDepositCount.set(sender, u256.One);
+        } else {
+            // Top-up — preserve existing lock, increment count
+            this.userDepositCount.set(sender, SafeMath.add(this.userDepositCount.get(sender), u256.One));
+        }
+        this.userBalance.set(sender, SafeMath.add(currentBalance, amount));
+        this.totalLocked.value = SafeMath.add(this.totalLocked.value, amount);
+
+        // Interaction — move PIGGY from sender to this contract (internal OP20 transfer)
+        this._transfer(sender, Blockchain.contractAddress, amount);
+
+        const w = new BytesWriter(1);
+        w.writeBoolean(true);
         return w;
     }
 
@@ -394,11 +539,11 @@ export class PiggyBank extends OP20 {
     private claimFaucet(_calldata: Calldata): BytesWriter {
         const sender: Address = Blockchain.tx.sender;
 
-        if (!this.claimed.get(sender).isZero()) {
+        const senderBalance: u256 = this.balanceOfMap.get(sender);
+        if (senderBalance >= FAUCET_AMOUNT) {
             throw new Revert('Faucet already claimed');
         }
 
-        this.claimed.set(sender, u256.One);
         this._mint(sender, FAUCET_AMOUNT);
 
         Blockchain.emit(new FaucetClaimedEvent(sender, FAUCET_AMOUNT));

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Address } from '@btc-vision/transaction';
 import { Network } from '@btc-vision/bitcoin';
 import { usePiggyBankContract } from '../hooks/usePiggyBank';
+import { useProvider } from '../hooks/useProvider';
 
 interface VaultSetupPageProps {
     readonly walletAddress: string | null | undefined;
@@ -10,15 +11,19 @@ interface VaultSetupPageProps {
     readonly onSuccess: () => void;
 }
 
+// OPNet testnet: 4 min blocks → 15 blocks/hr → 360 blocks/day
+const BLOCKS_PER_HOUR = 15;
+
 const LOCK_PRESETS = [
-    { label: '1K', blocks: 1_000n, days: '~7 days' },
-    { label: '5K', blocks: 5_000n, days: '~35 days' },
-    { label: '10K', blocks: 10_000n, days: '~69 days' },
-    { label: '26K', blocks: 26_280n, days: '~6 months' },
+    { label: '1K', blocks: 1_000n, days: '~2.8 days' },
+    { label: '5K', blocks: 5_000n, days: '~14 days' },
+    { label: '10K', blocks: 10_000n, days: '~28 days' },
+    { label: '26K', blocks: 26_280n, days: '~2.4 months' },
 ];
 
 export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSuccess }: VaultSetupPageProps) {
     const piggyContract = usePiggyBankContract(network, resolvedAddress ?? undefined);
+    const provider = useProvider(network);
 
     const [strategy, setStrategy] = useState<1 | 2>(1);
     const [bps, setBps] = useState(100);
@@ -26,6 +31,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
     const [selectedPreset, setSelectedPreset] = useState<bigint | 'custom'>(1_000n);
     const [customBlocks, setCustomBlocks] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [pendingTxId, setPendingTxId] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     const lockBlocks: bigint = lockMode === 'unlocked'
@@ -56,16 +62,21 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                 throw new Error(`Contract revert: ${sim.revert}`);
             }
 
-            await sim.sendTransaction({
+            const result = await sim.sendTransaction({
                 signer: null,
                 mldsaSigner: null,
                 refundTo: walletAddress,
                 maximumAllowedSatToSpend: 100_000n,
                 feeRate: 10,
                 network: network!,
-            });
+            }) as { transactionId?: string; txid?: string } | null;
 
-            onSuccess();
+            const txId = result?.transactionId ?? result?.txid ?? null;
+            if (txId) {
+                setPendingTxId(txId);
+            } else {
+                onSuccess();
+            }
         } catch (e: unknown) {
             const msg = e instanceof Error ? e.message : 'Transaction failed';
             setError(msg);
@@ -73,6 +84,23 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
             setSubmitting(false);
         }
     }
+
+    // Poll for on-chain confirmation after TX submission
+    useEffect(() => {
+        if (!pendingTxId || !provider) return;
+        let cancelled = false;
+        const confirm = () => { setPendingTxId(null); onSuccess(); };
+        const poll = async () => {
+            try {
+                const tx = await provider.getTransaction(pendingTxId);
+                if (!cancelled && tx && (tx as { blockNumber?: number }).blockNumber != null) confirm();
+            } catch { /* not yet mined */ }
+        };
+        void poll();
+        const interval = setInterval(() => { void poll(); }, 5000);
+        const timeout = setTimeout(() => { if (!cancelled) confirm(); }, 60_000);
+        return () => { cancelled = true; clearInterval(interval); clearTimeout(timeout); };
+    }, [pendingTxId, provider, onSuccess]);
 
     const bpsPercent = (bps / 100).toFixed(2);
 
@@ -107,7 +135,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
 
                 {/* Strategy */}
                 <div className="mb-6">
-                    <label className="block text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#6b7280' }}>
+                    <label className="block text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#9ca3af' }}>
                         Strategy
                     </label>
                     <div className="flex gap-2">
@@ -117,7 +145,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                             style={{
                                 background: strategy === 1 ? 'rgba(74,222,128,0.15)' : 'transparent',
                                 border: strategy === 1 ? '1px solid rgba(74,222,128,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                color: strategy === 1 ? '#4ade80' : '#6b7280',
+                                color: strategy === 1 ? '#4ade80' : '#9ca3af',
                                 cursor: 'pointer',
                             }}
                         >
@@ -129,7 +157,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                             style={{
                                 background: strategy === 2 ? 'rgba(74,222,128,0.15)' : 'transparent',
                                 border: strategy === 2 ? '1px solid rgba(74,222,128,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                color: strategy === 2 ? '#4ade80' : '#6b7280',
+                                color: strategy === 2 ? '#4ade80' : '#9ca3af',
                                 cursor: 'pointer',
                             }}
                         >
@@ -155,7 +183,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                                     {bpsPercent}%
                                 </span>
                             </div>
-                            <p className="text-xs mt-1" style={{ color: '#4b5563' }}>
+                            <p className="text-xs mt-1" style={{ color: '#9ca3af' }}>
                                 {bps} bps — {bpsPercent}% of each swap goes to vault
                             </p>
                         </div>
@@ -164,7 +192,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
 
                 {/* Lock Mode */}
                 <div className="mb-6">
-                    <label className="block text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#6b7280' }}>
+                    <label className="block text-xs font-bold tracking-widest uppercase mb-3" style={{ color: '#9ca3af' }}>
                         Lock Mode
                     </label>
                     <div className="flex gap-2 mb-3">
@@ -174,7 +202,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                             style={{
                                 background: lockMode === 'locked' ? 'rgba(247,147,26,0.15)' : 'transparent',
                                 border: lockMode === 'locked' ? '1px solid rgba(247,147,26,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                color: lockMode === 'locked' ? '#f7931a' : '#6b7280',
+                                color: lockMode === 'locked' ? '#f7931a' : '#9ca3af',
                                 cursor: 'pointer',
                             }}
                         >
@@ -186,7 +214,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                             style={{
                                 background: lockMode === 'unlocked' ? 'rgba(74,222,128,0.15)' : 'transparent',
                                 border: lockMode === 'unlocked' ? '1px solid rgba(74,222,128,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                color: lockMode === 'unlocked' ? '#4ade80' : '#6b7280',
+                                color: lockMode === 'unlocked' ? '#4ade80' : '#9ca3af',
                                 cursor: 'pointer',
                             }}
                         >
@@ -205,7 +233,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                                         style={{
                                             background: selectedPreset === p.blocks ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
                                             border: selectedPreset === p.blocks ? '1px solid rgba(74,222,128,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                            color: selectedPreset === p.blocks ? '#4ade80' : '#6b7280',
+                                            color: selectedPreset === p.blocks ? '#4ade80' : '#9ca3af',
                                             cursor: 'pointer',
                                         }}
                                         title={p.days}
@@ -219,7 +247,7 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                                     style={{
                                         background: selectedPreset === 'custom' ? 'rgba(74,222,128,0.15)' : 'rgba(255,255,255,0.05)',
                                         border: selectedPreset === 'custom' ? '1px solid rgba(74,222,128,0.5)' : '1px solid rgba(255,255,255,0.1)',
-                                        color: selectedPreset === 'custom' ? '#4ade80' : '#6b7280',
+                                        color: selectedPreset === 'custom' ? '#4ade80' : '#9ca3af',
                                         cursor: 'pointer',
                                     }}
                                 >
@@ -241,9 +269,9 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                                     }}
                                 />
                             )}
-                            <p className="text-xs mt-2" style={{ color: '#4b5563' }}>
+                            <p className="text-xs mt-2" style={{ color: '#9ca3af' }}>
                                 {lockBlocks > 0n
-                                    ? `~${Math.round(Number(lockBlocks) / 6 / 24)} days at 6 blocks/hr`
+                                    ? `~${Math.round(Number(lockBlocks) / BLOCKS_PER_HOUR / 24)} days at ${BLOCKS_PER_HOUR} blocks/hr`
                                     : 'Enter blocks above'
                                 }
                             </p>
@@ -270,20 +298,22 @@ export function VaultSetupPage({ walletAddress, resolvedAddress, network, onSucc
                 {/* Submit */}
                 <button
                     onClick={() => { void handleSubmit(); }}
-                    disabled={submitting || !walletAddress}
+                    disabled={submitting || !!pendingTxId || !walletAddress}
                     className="w-full py-4 rounded-xl font-bold text-sm tracking-widest uppercase transition-all duration-300"
                     style={{
-                        background: submitting || !walletAddress
+                        background: submitting || pendingTxId || !walletAddress
                             ? 'rgba(247,147,26,0.3)'
                             : 'linear-gradient(135deg, #f7931a, #f59e0b)',
-                        color: submitting || !walletAddress ? '#6b7280' : '#000',
-                        cursor: submitting || !walletAddress ? 'not-allowed' : 'pointer',
-                        boxShadow: submitting || !walletAddress ? 'none' : '0 0 20px rgba(247,147,26,0.3)',
+                        color: submitting || pendingTxId || !walletAddress ? '#9ca3af' : '#000',
+                        cursor: submitting || pendingTxId || !walletAddress ? 'not-allowed' : 'pointer',
+                        boxShadow: submitting || pendingTxId || !walletAddress ? 'none' : '0 0 20px rgba(247,147,26,0.3)',
                         fontFamily: 'Courier New, monospace',
                     }}
                 >
                     {submitting ? (
                         <><span className="spinner" />Initializing...</>
+                    ) : pendingTxId ? (
+                        <><span className="spinner" />Confirming on-chain...</>
                     ) : (
                         'Initialize Stash'
                     )}

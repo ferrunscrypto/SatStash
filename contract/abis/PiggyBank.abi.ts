@@ -26,9 +26,27 @@ export const PiggyBankAbi = [
         type: BitcoinAbiTypes.Function,
     },
     {
+        name: 'swapPiggyForBank',
+        inputs: [
+            { name: 'piggyAmount', type: ABIDataTypes.UINT256 },
+            { name: 'minBankOut', type: ABIDataTypes.UINT256 },
+        ],
+        outputs: [
+            { name: 'bankToWallet', type: ABIDataTypes.UINT256 },
+            { name: 'dustToVault', type: ABIDataTypes.UINT256 },
+        ],
+        type: BitcoinAbiTypes.Function,
+    },
+    {
         name: 'withdraw',
         inputs: [],
         outputs: [{ name: 'amount', type: ABIDataTypes.UINT256 }],
+        type: BitcoinAbiTypes.Function,
+    },
+    {
+        name: 'depositToVault',
+        inputs: [{ name: 'amount', type: ABIDataTypes.UINT256 }],
+        outputs: [{ name: 'success', type: ABIDataTypes.BOOL }],
         type: BitcoinAbiTypes.Function,
     },
     {

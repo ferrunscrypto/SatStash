@@ -125,10 +125,16 @@ function AppInner() {
     );
 }
 
+/** Forces a full remount of AppInner (and all its state/hooks) when the wallet address changes. */
+function AppWithKey() {
+    const { walletAddress } = useWalletConnect();
+    return <AppInner key={walletAddress ?? 'disconnected'} />;
+}
+
 export function App() {
     return (
         <HashRouter>
-            <AppInner />
+            <AppWithKey />
         </HashRouter>
     );
 }

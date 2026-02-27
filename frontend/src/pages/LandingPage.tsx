@@ -29,7 +29,7 @@ export function LandingPage() {
                 </h1>
                 <p
                     className="text-lg tracking-wider uppercase"
-                    style={{ color: '#6b7280', fontFamily: 'Courier New, monospace' }}
+                    style={{ color: '#9ca3af', fontFamily: 'Courier New, monospace' }}
                 >
                     Stack Sats. Automate Savings.
                 </p>
@@ -61,7 +61,7 @@ export function LandingPage() {
             {/* Footer note */}
             <p
                 className="text-xs tracking-wider"
-                style={{ color: '#4b5563' }}
+                style={{ color: '#9ca3af' }}
             >
                 OPNet Testnet &bull; OP_WALLET Required
             </p>

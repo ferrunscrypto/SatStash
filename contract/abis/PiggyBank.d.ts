@@ -31,11 +31,32 @@ export type SwapForDust = CallResult<
 >;
 
 /**
+ * @description Represents the result of the swapPiggyForBank function call.
+ */
+export type SwapPiggyForBank = CallResult<
+    {
+        bankToWallet: bigint;
+        dustToVault: bigint;
+    },
+    OPNetEvent<never>[]
+>;
+
+/**
  * @description Represents the result of the withdraw function call.
  */
 export type Withdraw = CallResult<
     {
         amount: bigint;
+    },
+    OPNetEvent<never>[]
+>;
+
+/**
+ * @description Represents the result of the depositToVault function call.
+ */
+export type DepositToVault = CallResult<
+    {
+        success: boolean;
     },
     OPNetEvent<never>[]
 >;
@@ -100,7 +121,9 @@ export type GetDustConfig = CallResult<
 export interface IPiggyBank extends IOP_NETContract {
     createVault(mode: number, bps: number, lockBlocks: bigint): Promise<CreateVault>;
     swapForDust(bankAmount: bigint, minPiggyOut: bigint): Promise<SwapForDust>;
+    swapPiggyForBank(piggyAmount: bigint, minBankOut: bigint): Promise<SwapPiggyForBank>;
     withdraw(): Promise<Withdraw>;
+    depositToVault(amount: bigint): Promise<DepositToVault>;
     getPosition(addr: Address): Promise<GetPosition>;
     getTotalLocked(): Promise<GetTotalLocked>;
     canWithdraw(addr: Address): Promise<CanWithdraw>;

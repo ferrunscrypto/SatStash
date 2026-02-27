@@ -29,6 +29,30 @@ export const PIGGY_BANK_ABI: BitcoinInterfaceAbi = [
         ],
     },
     {
+        name: 'swapPiggyForBank',
+        type: BitcoinAbiTypes.Function,
+        constant: false,
+        inputs: [
+            { name: 'piggyAmount', type: ABIDataTypes.UINT256 },
+            { name: 'minBankOut', type: ABIDataTypes.UINT256 },
+        ],
+        outputs: [
+            { name: 'bankToWallet', type: ABIDataTypes.UINT256 },
+            { name: 'dustToVault', type: ABIDataTypes.UINT256 },
+        ],
+    },
+    {
+        name: 'depositToVault',
+        type: BitcoinAbiTypes.Function,
+        constant: false,
+        inputs: [
+            { name: 'amount', type: ABIDataTypes.UINT256 },
+        ],
+        outputs: [
+            { name: 'success', type: ABIDataTypes.BOOL },
+        ],
+    },
+    {
         name: 'withdraw',
         type: BitcoinAbiTypes.Function,
         constant: false,
@@ -94,6 +118,16 @@ export const PIGGY_BANK_ABI: BitcoinInterfaceAbi = [
             { name: 'lockBlocks', type: ABIDataTypes.UINT256 },
         ],
     },
+    {
+        name: 'increaseAllowance',
+        type: BitcoinAbiTypes.Function,
+        constant: false,
+        inputs: [
+            { name: 'spender', type: ABIDataTypes.ADDRESS },
+            { name: 'amount', type: ABIDataTypes.UINT256 },
+        ],
+        outputs: [],
+    },
     // ── OP20 standard methods ─────────────────────────────────
     {
         name: 'balanceOf',
@@ -108,19 +142,24 @@ export const PIGGY_BANK_ABI: BitcoinInterfaceAbi = [
     },
 ];
 
-// ── OP20 approve ABI (for BANK approve step before swap) ──
+// ── OP20 approve ABI (for token approve step before swap) ──
 export const ERC20_APPROVE_ABI: BitcoinInterfaceAbi = [
     {
-        name: 'approve',
+        name: 'increaseAllowance',
         type: BitcoinAbiTypes.Function,
         constant: false,
         inputs: [
             { name: 'spender', type: ABIDataTypes.ADDRESS },
             { name: 'amount', type: ABIDataTypes.UINT256 },
         ],
-        outputs: [
-            { name: 'success', type: ABIDataTypes.BOOL },
-        ],
+        outputs: [],
+    },
+    {
+        name: 'claimFaucet',
+        type: BitcoinAbiTypes.Function,
+        constant: false,
+        inputs: [],
+        outputs: [{ name: 'amount', type: ABIDataTypes.UINT256 }],
     },
     {
         name: 'allowance',

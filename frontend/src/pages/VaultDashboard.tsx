@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Address } from '@btc-vision/transaction';
 import { Network } from '@btc-vision/bitcoin';
 import { usePiggyBankContract } from '../hooks/usePiggyBank';
+import { useProvider } from '../hooks/useProvider';
 import type { Position, DustConfig } from '../hooks/usePiggyBankData';
 import { getContractAddress } from '../config/contracts';
 
@@ -24,12 +25,15 @@ const UNIT = 10n ** 8n;
 function formatToken(amount: bigint): string {
     const whole = amount / UNIT;
     const frac = amount % UNIT;
-    return `${whole.toLocaleString()}.${frac.toString().padStart(8, '0').replace(/0+$/, '') || '0'}`;
+    return `${whole.toLocaleString()},${frac.toString().padStart(8, '0').slice(0, 2)}`;
 }
+
+// OPNet testnet: 4 min blocks → 15 blocks/hr
+const BLOCKS_PER_HOUR = 15;
 
 function blocksToTime(blocks: bigint): string {
     if (blocks <= 0n) return 'Ready';
-    const hours = Number(blocks) / 6;
+    const hours = Number(blocks) / BLOCKS_PER_HOUR;
     if (hours < 24) return `~${hours.toFixed(1)}h`;
     const days = hours / 24;
     if (days < 30) return `~${days.toFixed(0)}d`;
@@ -50,7 +54,9 @@ export function VaultDashboard({
     onSuccess,
 }: VaultDashboardProps) {
     const piggyContract = usePiggyBankContract(network, resolvedAddress ?? undefined);
+    const provider = useProvider(network);
     const [isWithdrawing, setIsWithdrawing] = useState(false);
+    const [pendingTxId, setPendingTxId] = useState<string | null>(null);
 
     const piggyBankAddr = network ? getContractAddress('piggyBank', network) : null;
 
@@ -71,14 +77,36 @@ export function VaultDashboard({
                 console.error('Withdraw failed:', sim.revert);
                 return;
             }
-            await sim.sendTransaction(txParams);
-            onSuccess();
+            const result = await sim.sendTransaction(txParams) as { transactionId?: string; txid?: string } | null;
+            const txId = result?.transactionId ?? result?.txid ?? null;
+            if (txId) {
+                setPendingTxId(txId);
+            } else {
+                onSuccess();
+            }
         } catch (e: unknown) {
             console.error('Withdraw error:', e);
         } finally {
             setIsWithdrawing(false);
         }
     }, [piggyContract, walletAddress, piggyBankAddr, network, onSuccess]);
+
+    // Poll for on-chain confirmation after TX submission
+    useEffect(() => {
+        if (!pendingTxId || !provider) return;
+        let cancelled = false;
+        const confirm = () => { setPendingTxId(null); onSuccess(); };
+        const poll = async () => {
+            try {
+                const tx = await provider.getTransaction(pendingTxId);
+                if (!cancelled && tx && (tx as { blockNumber?: number }).blockNumber != null) confirm();
+            } catch { /* not yet mined */ }
+        };
+        void poll();
+        const interval = setInterval(() => { void poll(); }, 5000);
+        const timeout = setTimeout(() => { if (!cancelled) confirm(); }, 60_000);
+        return () => { cancelled = true; clearInterval(interval); clearTimeout(timeout); };
+    }, [pendingTxId, provider, onSuccess]);
 
     const dustModeLabel = dustConfig
         ? dustConfig.mode === 1n
@@ -104,6 +132,14 @@ export function VaultDashboard({
     } else if (canWithdraw && balance > 0n) {
         lockProgress = 100;
     }
+
+    // Estimated unlock date/time
+    const estimatedUnlockStr = (() => {
+        if (blocksRemaining <= 0n || canWithdraw) return null;
+        const secondsRemaining = Number(blocksRemaining) * (240); // 4 min blocks
+        const unlockDate = new Date(Date.now() + secondsRemaining * 1000);
+        return unlockDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    })();
 
     return (
         <div
@@ -132,7 +168,7 @@ export function VaultDashboard({
                             >
                                 Your Stash
                             </h1>
-                            <p className="text-xs tracking-wider mt-1" style={{ color: '#4b5563' }}>
+                            <p className="text-xs tracking-wider mt-1" style={{ color: '#9ca3af' }}>
                                 {dustModeLabel} &bull; {lockLabel}
                             </p>
                         </div>
@@ -144,7 +180,7 @@ export function VaultDashboard({
                     className="rounded-xl p-6 mb-4"
                     style={{ background: '#0f172a', border: '1px solid rgba(74,222,128,0.2)' }}
                 >
-                    <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#4b5563' }}>
+                    <p className="text-xs uppercase tracking-widest mb-2" style={{ color: '#9ca3af' }}>
                         Total Locked
                     </p>
                     <p
@@ -157,12 +193,12 @@ export function VaultDashboard({
                     >
                         {loading ? '...' : formatToken(balance)}
                     </p>
-                    <p className="text-sm" style={{ color: '#6b7280' }}>$PIGGY</p>
+                    <p className="text-sm" style={{ color: '#9ca3af' }}>$PIGGY</p>
 
                     {/* Progress bar */}
                     {balance > 0n && (
                         <div className="mt-4">
-                            <div className="flex justify-between text-xs mb-1" style={{ color: '#4b5563' }}>
+                            <div className="flex justify-between text-xs mb-1" style={{ color: '#9ca3af' }}>
                                 <span>{canWithdraw ? 'UNLOCKED' : `${blocksRemaining.toLocaleString()} blocks remaining`}</span>
                                 <span>{blocksToTime(blocksRemaining)}</span>
                             </div>
@@ -177,6 +213,12 @@ export function VaultDashboard({
                                     }}
                                 />
                             </div>
+                            {!canWithdraw && estimatedUnlockStr && (
+                                <div className="flex justify-between text-xs mt-2" style={{ color: '#9ca3af' }}>
+                                    <span>Unlocks at block <span className="font-mono" style={{ color: '#e2e8f0' }}>#{unlockBlock.toLocaleString()}</span></span>
+                                    <span style={{ color: '#f7931a' }}>{estimatedUnlockStr}</span>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
@@ -187,7 +229,7 @@ export function VaultDashboard({
                         className="rounded-xl p-4"
                         style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.05)' }}
                     >
-                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#4b5563' }}>Deposits</p>
+                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#9ca3af' }}>Deposits</p>
                         <p className="text-xl font-bold font-mono" style={{ color: '#e2e8f0' }}>
                             {depositCount.toString()}
                         </p>
@@ -196,7 +238,7 @@ export function VaultDashboard({
                         className="rounded-xl p-4"
                         style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.05)' }}
                     >
-                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#4b5563' }}>Unlock Block</p>
+                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#9ca3af' }}>Unlock Block</p>
                         <p className="text-xl font-bold font-mono" style={{ color: '#e2e8f0' }}>
                             {balance > 0n ? unlockBlock.toLocaleString() : '—'}
                         </p>
@@ -205,7 +247,7 @@ export function VaultDashboard({
                         className="rounded-xl p-4"
                         style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.05)' }}
                     >
-                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#4b5563' }}>TVL</p>
+                        <p className="text-xs uppercase tracking-wider mb-1" style={{ color: '#9ca3af' }}>TVL</p>
                         <p className="text-xl font-bold font-mono" style={{ color: '#e2e8f0' }}>
                             {formatToken(totalLocked).split('.')[0]}
                         </p>
@@ -217,38 +259,42 @@ export function VaultDashboard({
                     className="rounded-xl p-5 mb-4"
                     style={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.05)' }}
                 >
-                    <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#4b5563' }}>Config</p>
+                    <p className="text-xs uppercase tracking-widest mb-3" style={{ color: '#9ca3af' }}>Config</p>
                     <div className="flex justify-between text-sm mb-2">
-                        <span style={{ color: '#6b7280' }}>Strategy</span>
+                        <span style={{ color: '#9ca3af' }}>Strategy</span>
                         <span style={{ color: '#e2e8f0' }}>{dustModeLabel}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                        <span style={{ color: '#6b7280' }}>Lock Period</span>
+                        <span style={{ color: '#9ca3af' }}>Lock Period</span>
                         <span style={{ color: '#e2e8f0' }}>{lockLabel}</span>
                     </div>
                     <div className="flex justify-between text-sm mt-2">
-                        <span style={{ color: '#6b7280' }}>Current Block</span>
-                        <span className="font-mono" style={{ color: '#6b7280' }}>#{currentBlock.toLocaleString()}</span>
+                        <span style={{ color: '#9ca3af' }}>Current Block</span>
+                        <span className="font-mono" style={{ color: '#9ca3af' }}>#{currentBlock.toLocaleString()}</span>
                     </div>
                 </div>
 
                 {/* Withdraw button */}
                 <button
                     onClick={() => { void handleWithdraw(); }}
-                    disabled={!canWithdraw || balance === 0n || isWithdrawing}
+                    disabled={!canWithdraw || balance === 0n || isWithdrawing || !!pendingTxId}
                     className="w-full py-4 rounded-xl font-bold text-sm tracking-widest uppercase transition-all duration-300"
                     style={{
-                        background: canWithdraw && balance > 0n
+                        background: canWithdraw && balance > 0n && !isWithdrawing && !pendingTxId
                             ? 'linear-gradient(135deg, #f7931a, #f59e0b)'
                             : 'rgba(255,255,255,0.05)',
-                        color: canWithdraw && balance > 0n ? '#000' : '#4b5563',
-                        cursor: canWithdraw && balance > 0n ? 'pointer' : 'not-allowed',
-                        border: canWithdraw && balance > 0n ? 'none' : '1px solid rgba(255,255,255,0.08)',
-                        boxShadow: canWithdraw && balance > 0n ? '0 0 20px rgba(247,147,26,0.3)' : 'none',
+                        color: canWithdraw && balance > 0n && !isWithdrawing && !pendingTxId ? '#000' : '#9ca3af',
+                        cursor: canWithdraw && balance > 0n && !isWithdrawing && !pendingTxId ? 'pointer' : 'not-allowed',
+                        border: canWithdraw && balance > 0n && !isWithdrawing && !pendingTxId ? 'none' : '1px solid rgba(255,255,255,0.08)',
+                        boxShadow: canWithdraw && balance > 0n && !isWithdrawing && !pendingTxId ? '0 0 20px rgba(247,147,26,0.3)' : 'none',
                         fontFamily: 'Courier New, monospace',
                     }}
                 >
-                    {!canWithdraw && balance > 0n
+                    {isWithdrawing ? (
+                        <><span className="spinner" />Withdrawing...</>
+                    ) : pendingTxId ? (
+                        <><span className="spinner" />Confirming on-chain...</>
+                    ) : !canWithdraw && balance > 0n
                         ? `Locked · ${blocksRemaining.toLocaleString()} blocks`
                         : balance === 0n
                             ? 'No Position'

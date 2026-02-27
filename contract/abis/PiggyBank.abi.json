@@ -53,6 +53,32 @@
             ]
         },
         {
+            "name": "swapPiggyForBank",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "piggyAmount",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "minBankOut",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "bankToWallet",
+                    "type": "UINT256"
+                },
+                {
+                    "name": "dustToVault",
+                    "type": "UINT256"
+                }
+            ]
+        },
+        {
             "name": "withdraw",
             "type": "Function",
             "payable": false,
@@ -62,6 +88,24 @@
                 {
                     "name": "amount",
                     "type": "UINT256"
+                }
+            ]
+        },
+        {
+            "name": "depositToVault",
+            "type": "Function",
+            "payable": false,
+            "onlyOwner": false,
+            "inputs": [
+                {
+                    "name": "amount",
+                    "type": "UINT256"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "success",
+                    "type": "BOOL"
                 }
             ]
         },

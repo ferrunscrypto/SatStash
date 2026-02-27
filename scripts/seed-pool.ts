@@ -49,24 +49,34 @@ const RPC_MAP: Record<string, string> = {
     mainnet: 'https://mainnet.opnet.org',
 };
 
-// Seed amounts: 1,000,000 BANK and 10,000,000 PIGGY (8 decimals each)
-const BANK_SEED_AMOUNT  = BigInt('100000000000000');  // 1,000,000 × 10^8
-const PIGGY_SEED_AMOUNT = BigInt('1000000000000000'); // 10,000,000 × 10^8
+// Seed amounts: 10,000 of each at 1:1 ratio (faucet gives 1,000 per claim → 10 claims of liquidity depth)
+const BANK_SEED_AMOUNT  = BigInt('1000000000000');  // 10,000 BANK × 10^8
+const PIGGY_SEED_AMOUNT = BigInt('1000000000000');  // 10,000 PIGGY × 10^8
 
 // ── ABIs ────────────────────────────────────────────────────────────────────
 
+const PIGGY_FAUCET_ABI: BitcoinInterfaceAbi = [
+    {
+        name: 'claimFaucet',
+        type: BitcoinAbiTypes.Function,
+        constant: false,
+        inputs: [],
+        outputs: [
+            { name: 'amount', type: ABIDataTypes.UINT256 },
+        ],
+    },
+];
+
 const OP20_APPROVE_ABI: BitcoinInterfaceAbi = [
     {
-        name: 'approve',
+        name: 'increaseAllowance',
         type: BitcoinAbiTypes.Function,
         constant: false,
         inputs: [
             { name: 'spender', type: ABIDataTypes.ADDRESS },
             { name: 'amount',  type: ABIDataTypes.UINT256 },
         ],
-        outputs: [
-            { name: 'success', type: ABIDataTypes.BOOL },
-        ],
+        outputs: [],
     },
 ];
 
@@ -135,7 +145,7 @@ async function main(): Promise<void> {
     // Tweaked pubkey for the pool — obtained from OPNet RPC at deploy time.
     // Update this if pool is redeployed.
     const poolTweakedPubkey = process.env['POOL_TWEAKED_PUBKEY']
-        ?? '527083e04153ab99fbdbac9af582b7cf290e53524f6106a6d60a67d4c01bc56f';
+        ?? '0f3781fb0861adc76122d3c7ae0782d7889936852d720dc99530277303e512e3';
 
     if (!poolAddress)  throw new Error('POOL_ADDRESS env var required');
     if (!bankAddress)  throw new Error('BANK_TOKEN_ADDRESS env var required');
@@ -152,14 +162,57 @@ async function main(): Promise<void> {
     const poolAddrObj = contractToAddress(poolTweakedPubkey);
 
     const txParams = {
-        signer:      wallet.keypair,
-        mldsaSigner: wallet.mldsaKeypair,
-        refundTo:    wallet.p2tr,
-        feeRate:     5,
-        priorityFee: 0n,
-        gasSatFee:   100_000n,
-        network:     NETWORK,
+        signer:                       wallet.keypair,
+        mldsaSigner:                  wallet.mldsaKeypair,
+        refundTo:                     wallet.p2tr,
+        feeRate:                      5,
+        priorityFee:                  0n,
+        gasSatFee:                    100_000n,
+        maximumAllowedSatToSpend:     100_000n,
+        linkMLDSAPublicKeyToAddress:  false,  // use old format, testnet node doesn't support new
+        network:                      NETWORK,
     };
+
+    // ── Diagnostic: log raw TXs being sent ──────────────────────────────────
+    const origSend = (provider as any).sendRawTransaction.bind(provider);
+    (provider as any).sendRawTransaction = async (raw: string, flag: boolean) => {
+        console.log(`  [RAW TX] length=${raw.length} flag=${flag}`);
+        const result = await origSend(raw, flag);
+        console.log(`  [RAW TX RESULT] success=${result?.success} error=${result?.error} result=${result?.result}`);
+        if (!result?.success) {
+            // Save failing TX for offline analysis
+            const fs = await import('fs');
+            fs.writeFileSync('/tmp/failing_tx.hex', raw);
+            console.log('  Saved failing TX to /tmp/failing_tx.hex');
+        }
+        return result;
+    };
+
+    // ── Step 0: Claim PIGGY faucet ───────────────────────────────────────────
+
+    console.log(`\nStep 0: Claiming PIGGY faucet (100K PIGGY → deployer)...`);
+    const piggyFaucetContract = getContract(piggyAddress, PIGGY_FAUCET_ABI, provider, NETWORK, fromAddr);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let faucetSim: any;
+    try {
+        faucetSim = await (piggyFaucetContract as any).claimFaucet();
+    } catch (e: unknown) {
+        console.log(`  Faucet sim threw: ${e instanceof Error ? e.message : String(e)}`);
+        console.log('  Continuing (deployer may already have PIGGY)...');
+        faucetSim = null;
+    }
+    if (!faucetSim) {
+        // already handled above
+    } else if (faucetSim.revert) {
+        console.log(`  Faucet already claimed or error: ${String(faucetSim.revert)}`);
+        console.log('  Continuing (deployer may already have PIGGY)...');
+    } else {
+        const faucetTx = await faucetSim.sendTransaction(txParams);
+        console.log(`  Faucet TX: ${JSON.stringify(faucetTx)}`);
+        console.log('  (waiting 60s for block confirmation...)');
+        await new Promise(r => setTimeout(r, 60_000));
+    }
 
     // ── Step 1: Approve pool to spend BANK ──────────────────────────────────
 
@@ -167,13 +220,13 @@ async function main(): Promise<void> {
     const bankContract = getContract(bankAddress, OP20_APPROVE_ABI, provider, NETWORK, fromAddr);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const approveBankSim = await (bankContract as any).approve(poolAddrObj, BANK_SEED_AMOUNT);
-    if (approveBankSim.revert) throw new Error(`BANK approve simulation reverted: ${String(approveBankSim.revert)}`);
+    const approveBankSim = await (bankContract as any).increaseAllowance(poolAddrObj, BANK_SEED_AMOUNT);
+    if (approveBankSim.revert) throw new Error(`BANK increaseAllowance simulation reverted: ${String(approveBankSim.revert)}`);
 
     const approveBankTx = await approveBankSim.sendTransaction(txParams);
     console.log(`  BANK approve TX: ${JSON.stringify(approveBankTx)}`);
-    console.log('  (waiting 30s for propagation...)');
-    await new Promise(r => setTimeout(r, 30_000));
+    console.log('  (waiting 90s for indexing...)');
+    await new Promise(r => setTimeout(r, 90_000));
 
     // ── Step 2: Approve pool to spend PIGGY ─────────────────────────────────
 
@@ -181,13 +234,13 @@ async function main(): Promise<void> {
     const piggyContract = getContract(piggyAddress, OP20_APPROVE_ABI, provider, NETWORK, fromAddr);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const approvePiggySim = await (piggyContract as any).approve(poolAddrObj, PIGGY_SEED_AMOUNT);
-    if (approvePiggySim.revert) throw new Error(`PIGGY approve simulation reverted: ${String(approvePiggySim.revert)}`);
+    const approvePiggySim = await (piggyContract as any).increaseAllowance(poolAddrObj, PIGGY_SEED_AMOUNT);
+    if (approvePiggySim.revert) throw new Error(`PIGGY increaseAllowance simulation reverted: ${String(approvePiggySim.revert)}`);
 
     const approvePiggyTx = await approvePiggySim.sendTransaction(txParams);
     console.log(`  PIGGY approve TX: ${JSON.stringify(approvePiggyTx)}`);
-    console.log('  (waiting 30s for propagation...)');
-    await new Promise(r => setTimeout(r, 30_000));
+    console.log('  (waiting 90s for indexing...)');
+    await new Promise(r => setTimeout(r, 90_000));
 
     // ── Step 3: Initialize liquidity ────────────────────────────────────────
 
@@ -212,6 +265,8 @@ async function main(): Promise<void> {
 
 main().catch((err: unknown) => {
     const msg = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack : '';
     console.error(`\nSeed failed: ${msg}`);
+    if (stack) console.error(stack);
     process.exit(1);
 });

@@ -12,16 +12,14 @@ export const BANK_TOKEN_ABI: BitcoinInterfaceAbi = [
         ],
     },
     {
-        name: 'approve',
+        name: 'increaseAllowance',
         type: BitcoinAbiTypes.Function,
         constant: false,
         inputs: [
             { name: 'spender', type: ABIDataTypes.ADDRESS },
             { name: 'amount', type: ABIDataTypes.UINT256 },
         ],
-        outputs: [
-            { name: 'success', type: ABIDataTypes.BOOL },
-        ],
+        outputs: [],
     },
     {
         name: 'transfer',

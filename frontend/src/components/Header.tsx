@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useWalletConnect, SupportedWallets } from '@btc-vision/walletconnect';
+import { BlockInfoBar } from './BlockInfoBar';
 
 interface HeaderProps {
     readonly hasVault?: boolean;
@@ -46,7 +47,7 @@ export function Header({ hasVault = false }: HeaderProps) {
                                 textTransform: 'uppercase',
                                 textDecoration: 'none',
                                 borderBottom: isActive ? '2px solid #4ade80' : '2px solid transparent',
-                                color: isActive ? '#4ade80' : '#6b7280',
+                                color: isActive ? '#4ade80' : '#9ca3af',
                                 fontFamily: 'Courier New, monospace',
                                 transition: 'all 0.2s',
                             })}
@@ -62,7 +63,7 @@ export function Header({ hasVault = false }: HeaderProps) {
                                 textTransform: 'uppercase',
                                 textDecoration: 'none',
                                 borderBottom: isActive ? '2px solid #4ade80' : '2px solid transparent',
-                                color: isActive ? '#4ade80' : '#6b7280',
+                                color: isActive ? '#4ade80' : '#9ca3af',
                                 fontFamily: 'Courier New, monospace',
                                 transition: 'all 0.2s',
                             })}
@@ -73,8 +74,9 @@ export function Header({ hasVault = false }: HeaderProps) {
                     </nav>
                 )}
 
-                {/* Right: Wallet */}
+                {/* Right: Block info + Wallet */}
                 <div className="flex items-center gap-2 flex-shrink-0 relative">
+                    {walletAddress && <BlockInfoBar />}
                     {shortAddr ? (
                         <>
                             <button
@@ -101,7 +103,7 @@ export function Header({ hasVault = false }: HeaderProps) {
                                         zIndex: 100,
                                     }}
                                 >
-                                    <div className="px-3 py-2 text-xs" style={{ color: '#4b5563', borderBottom: '1px solid rgba(255,255,255,0.05)', fontFamily: 'Courier New, monospace' }}>
+                                    <div className="px-3 py-2 text-xs" style={{ color: '#9ca3af', borderBottom: '1px solid rgba(255,255,255,0.05)', fontFamily: 'Courier New, monospace' }}>
                                         {walletAddress?.slice(0, 12)}...
                                     </div>
                                     <button

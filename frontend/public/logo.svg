@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#020a06"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <!-- Main text glow filter -->
+    <filter id="textGlow" x="-30%" y="-80%" width="160%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="blur1"/>
+      <feGaussianBlur stdDeviation="14" result="blur2"/>
+      <feGaussianBlur stdDeviation="30" result="blur3"/>
+      <feMerge>
+        <feMergeNode in="blur3"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Subtle glow for secondary elements -->
+    <filter id="subtleGlow" x="-20%" y="-50%" width="140%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Circuit board line glow -->
+    <filter id="lineGlow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Bitcoin orange glow -->
+    <filter id="btcGlow" x="-40%" y="-80%" width="180%" height="260%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6fff9e"/>
+      <stop offset="40%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="subGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4ade80" stop-opacity="0"/>
+      <stop offset="20%" stop-color="#4ade80"/>
+      <stop offset="80%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#4ade80" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- ══ CIRCUIT BOARD TEXTURE (subtle background) ══ -->
+  <g stroke="#4ade80" stroke-width="0.8" opacity="0.07" fill="none">
+    <!-- Horizontal grid lines -->
+    <line x1="0" y1="200" x2="1024" y2="200"/>
+    <line x1="0" y1="400" x2="1024" y2="400"/>
+    <line x1="0" y1="600" x2="1024" y2="600"/>
+    <line x1="0" y1="800" x2="1024" y2="800"/>
+    <!-- Vertical grid lines -->
+    <line x1="200" y1="0" x2="200" y2="1024"/>
+    <line x1="400" y1="0" x2="400" y2="1024"/>
+    <line x1="600" y1="0" x2="600" y2="1024"/>
+    <line x1="800" y1="0" x2="800" y2="1024"/>
+    <!-- Circuit nodes at intersections -->
+    <circle cx="200" cy="200" r="5"/>
+    <circle cx="400" cy="200" r="5"/>
+    <circle cx="600" cy="200" r="5"/>
+    <circle cx="800" cy="200" r="5"/>
+    <circle cx="200" cy="400" r="5"/>
+    <circle cx="400" cy="400" r="5"/>
+    <circle cx="600" cy="400" r="5"/>
+    <circle cx="800" cy="400" r="5"/>
+    <circle cx="200" cy="600" r="5"/>
+    <circle cx="400" cy="600" r="5"/>
+    <circle cx="600" cy="600" r="5"/>
+    <circle cx="800" cy="600" r="5"/>
+    <circle cx="200" cy="800" r="5"/>
+    <circle cx="400" cy="800" r="5"/>
+    <circle cx="600" cy="800" r="5"/>
+    <circle cx="800" cy="800" r="5"/>
+  </g>
+
+  <!-- Circuit trace decorations -->
+  <g stroke="#4ade80" stroke-width="1.2" opacity="0.12" fill="none">
+    <path d="M100 350 L180 350 L180 300 L260 300"/>
+    <path d="M924 350 L844 350 L844 300 L764 300"/>
+    <circle cx="180" cy="350" r="4" fill="#4ade80"/>
+    <circle cx="844" cy="350" r="4" fill="#4ade80"/>
+    <path d="M100 680 L160 680 L160 720 L220 720"/>
+    <path d="M924 680 L864 680 L864 720 L804 720"/>
+    <circle cx="160" cy="680" r="4" fill="#4ade80"/>
+    <circle cx="864" cy="680" r="4" fill="#4ade80"/>
+  </g>
+
+  <!-- ══ BITCOIN SYMBOL — top accent ══ -->
+  <text x="512" y="330" font-family="monospace" font-size="48" font-weight="bold"
+        fill="#f7931a" text-anchor="middle" filter="url(#btcGlow)">₿</text>
+
+  <!-- ══ MAIN LOGO TEXT: SatStash ══ -->
+  <!-- Shadow layer for depth -->
+  <text x="514" y="562" font-family="'Courier New', Courier, monospace" font-size="148"
+        font-weight="bold" fill="#4ade80" text-anchor="middle" opacity="0.08"
+        letter-spacing="-4">SatStash</text>
+
+  <!-- Main glowing text -->
+  <text x="512" y="558" font-family="'Courier New', Courier, monospace" font-size="148"
+        font-weight="bold" fill="url(#textGrad)" text-anchor="middle"
+        filter="url(#textGlow)" letter-spacing="-4">SatStash</text>
+
+  <!-- ══ SEPARATOR LINES ══ -->
+  <rect x="112" y="588" width="800" height="2" rx="1" fill="url(#subGrad)" opacity="0.6"/>
+
+  <!-- ══ TAGLINE ══ -->
+  <text x="512" y="640" font-family="'Courier New', Courier, monospace" font-size="22"
+        fill="#4ade80" text-anchor="middle" letter-spacing="8" opacity="0.8"
+        filter="url(#subtleGlow)">BITCOIN SAVINGS PROTOCOL</text>
+
+  <!-- ══ BOTTOM ACCENT ══ -->
+  <!-- Node dots flanking tagline -->
+  <circle cx="195" cy="634" r="4" fill="#4ade80" opacity="0.6" filter="url(#subtleGlow)"/>
+  <circle cx="829" cy="634" r="4" fill="#4ade80" opacity="0.6" filter="url(#subtleGlow)"/>
+
+  <!-- Bottom circuit decoration -->
+  <g stroke="#4ade80" stroke-width="1.5" opacity="0.35" fill="none" filter="url(#lineGlow)">
+    <path d="M200 690 L240 690 L240 720 L280 720 L280 690 L400 690"/>
+    <path d="M824 690 L784 690 L784 720 L744 720 L744 690 L624 690"/>
+    <circle cx="240" cy="690" r="4" fill="#4ade80"/>
+    <circle cx="784" cy="690" r="4" fill="#4ade80"/>
+  </g>
+
+  <!-- ══ VERSION / BUILD TAG ══ -->
+  <text x="512" y="750" font-family="'Courier New', Courier, monospace" font-size="14"
+        fill="#4ade80" text-anchor="middle" letter-spacing="3" opacity="0.4">v1.0 // OPNET TESTNET</text>
+
+  <!-- Ambient glow under text -->
+  <ellipse cx="512" cy="580" rx="380" ry="60" fill="#4ade80" opacity="0.03"/>
+</svg>

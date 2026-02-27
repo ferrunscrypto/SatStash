@@ -7,26 +7,21 @@ import {
     OP20InitParameters,
     Revert,
 } from '@btc-vision/btc-runtime/runtime';
-import { AddressMemoryMap } from '@btc-vision/btc-runtime/runtime/memory/AddressMemoryMap';
 
 // Max supply: 2B × 10^8  (1B held by deployer + 1B reserved for faucet claims)
 const MAX_SUPPLY: u256 = u256.fromString('200000000000000000');
 // Deployer initial alloc: 1B × 10^8
 const DEPLOYER_ALLOC: u256 = u256.fromString('100000000000000000');
-// 100,000 × 10^8  (one-time faucet grant)
-const FAUCET_AMOUNT: u256 = u256.fromString('10000000000000');
+// 1,000 × 10^8  — small per-claim amount; re-claimable once balance drops below this
+const FAUCET_AMOUNT: u256 = u256.fromString('100000000000');
 
 /**
  * BankToken — Standalone OP20 "BANK" token.
  *
- * All 1B BANK minted to deployer on deployment.
- * Users can call claimFaucet() once to receive 100,000 BANK for testing swaps.
+ * 1B BANK minted to deployer on deployment.
+ * Users can call claimFaucet() to receive 1,000 BANK whenever their balance drops below that.
  */
 export class BankToken extends OP20 {
-
-    // ── Per-user storage ──────────────────────────────────────────────────────
-    private readonly _claimedPointer: u16 = Blockchain.nextPointer;
-    private readonly claimed: AddressMemoryMap = new AddressMemoryMap(this._claimedPointer);
 
     public constructor() {
         super();
@@ -51,11 +46,11 @@ export class BankToken extends OP20 {
     public claimFaucet(_calldata: Calldata): BytesWriter {
         const sender = Blockchain.tx.sender;
 
-        if (!this.claimed.get(sender).isZero()) {
+        const senderBalance: u256 = this.balanceOfMap.get(sender);
+        if (senderBalance >= FAUCET_AMOUNT) {
             throw new Revert('Already claimed');
         }
 
-        this.claimed.set(sender, u256.One);
         this._mint(sender, FAUCET_AMOUNT);
 
         const w = new BytesWriter(32);

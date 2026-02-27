@@ -5,7 +5,8 @@ const provider = new JSONRpcProvider({ url: 'https://testnet.opnet.org', network
 
 const contracts: [string, string][] = [
   ['BankToken', 'opt1sqrqc3hyvwf46z0ys80jactw0d4x0j4v60y7qg6tl'],
-  ['PiggyBank(new)', 'opt1sqpezzj9qh0ht0s2g03njppp4mxmuz0udycg0cudq'],
+  ['PiggyBank(latest)', 'opt1sqq5yhl5n4fjjygrz00xldy9x8w4rskdlm5g8vf3d'],
+  ['SatStashPool', 'opt1sqq5enjyr2x2y6ujs2dsdzvwcdrj3ypeeycvd4slz'],
 ];
 
 async function check() {
@@ -15,9 +16,9 @@ async function check() {
     try {
       const code = await (provider as any).getCode(addr, true);
       const isCode = code && code !== '0x' && code !== '0x0';
-      console.log(`${name} (${addr}): ${isCode ? '✓ INDEXED' : '✗ not indexed'} len=${code?.length}`);
+      console.log(`${name}: ${isCode ? '✓ INDEXED' : '✗ not indexed'}`);
     } catch (e: unknown) {
-      console.log(`${name}: ✗ error - ${e instanceof Error ? e.message : String(e)}`);
+      console.log(`${name}: ✗ - ${e instanceof Error ? e.message : String(e)}`);
     }
   }
 }
