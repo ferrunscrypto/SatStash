@@ -7,6 +7,7 @@ import { LandingPage } from './pages/LandingPage';
 import { VaultSetupPage } from './pages/VaultSetupPage';
 import { SwapTerminal } from './pages/SwapTerminal';
 import { VaultDashboard } from './pages/VaultDashboard';
+import { ProfilePage } from './pages/ProfilePage';
 import { usePiggyBankData } from './hooks/usePiggyBankData';
 
 function AppInner() {
@@ -114,6 +115,22 @@ function AppInner() {
                             totalLocked={data.totalLocked}
                             loading={data.loading}
                             onSuccess={() => void data.refresh()}
+                        />
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProfilePage
+                            walletAddress={walletAddress}
+                            network={network ?? null}
+                            bankBalance={data.bankBalance}
+                            piggyBalance={data.piggyBalance}
+                            position={data.position}
+                            dustConfig={data.dustConfig}
+                            totalLocked={data.totalLocked}
+                            blocksRemaining={data.blocksRemaining}
+                            currentBlock={data.currentBlock}
                         />
                     }
                 />
