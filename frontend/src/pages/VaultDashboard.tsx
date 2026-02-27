@@ -158,15 +158,10 @@ export function VaultDashboard({
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                     />
                     <div
-                        className="absolute inset-0 flex items-center px-6"
+                        className="absolute inset-0 flex items-center justify-between px-6"
                         style={{ background: 'linear-gradient(90deg, rgba(3,7,18,0.95) 40%, transparent)' }}
                     >
-                        <img
-                            src="/favicon.svg"
-                            alt="SatStash"
-                            style={{ width: '100px', height: '100px', opacity: 0.95, filter: 'drop-shadow(0 0 14px rgba(74,222,128,0.5))', flexShrink: 0 }}
-                        />
-                        <div style={{ marginLeft: '16px' }}>
+                        <div>
                             <h1
                                 className="text-3xl font-bold tracking-widest"
                                 style={{ color: '#4ade80', fontFamily: 'Courier New, monospace', textShadow: '0 0 20px rgba(74,222,128,0.5)' }}
@@ -177,6 +172,11 @@ export function VaultDashboard({
                                 {dustModeLabel} &bull; {lockLabel}
                             </p>
                         </div>
+                        <img
+                            src="/favicon.svg"
+                            alt="SatStash"
+                            style={{ width: '80px', height: '80px', opacity: 0.9, filter: 'drop-shadow(0 0 12px rgba(74,222,128,0.4))' }}
+                        />
                     </div>
                 </div>
 
